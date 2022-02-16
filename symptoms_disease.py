@@ -63,6 +63,7 @@ features = df.columns[1:]
 from sklearn.naive_bayes import MultinomialNB
 mnb = MultinomialNB()
 mnb = mnb.fit(X_train, y_train)
+# Accuracy 80.31
 
 feature_dict = {}
 for i,f in enumerate(features):
