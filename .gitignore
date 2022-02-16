@@ -1,0 +1,4 @@
+venv/
+captcha/
+.vscode/
+__pycache__
