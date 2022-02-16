@@ -118,7 +118,3 @@ def intent_identifier(question):
     handler = QuestionClassifier()
     data = handler.classify(question)
     return data
-
-handler = QuestionClassifier()
-data = handler.classify("I have pnemonia")
-print(data)
