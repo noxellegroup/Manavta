@@ -10,17 +10,29 @@
     <meta name="description" content="Manavta is revolutionizing healthcare.">
     <meta name="keywords" content="manavta, healthcare, apratim, earthing, abhishek tk, swapnil">
     <meta name="author" content="Noxelle">
-    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css')}}">
-</head>
-<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js" type="text/javascript"></script>
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/stars.css')}}">
+</head>
+
+<body>
+  <div id='stars'></div>
+  <div id='stars2'></div>
+  <div id='stars3'></div>
+
+
+  
 <section class="msger">
+  
   <header class="msger-header">
-    <div class="msger-header-title">
-      <i class="fa fa-user-md"></i> Manavta
+    <div class="msger-header-title" style="font-weight: bolder;">
+      <i class="fa fa-user-md"></i> 
+      Manavta
     </div>
     <div class="msger-header-options">
-      <span><i class="fa fa-microphone"></i></span>
     </div>
   </header>
 
@@ -62,13 +74,16 @@
   </main>
 
   <form class="msger-inputarea" method="">
+    <img style="height: 50px;width: 50px;" src="{{ url_for('static',filename='img/mic_new.png')}}">
     <input type="text" class="msger-input" placeholder="Enter your message...">
     <input type="submit" class="msger-send-btn" value="Send" >
   </form>
 </section>
 
+
+
 <!-- partial -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.min.js"></script>
 <script type="text/javascript">
   var socket = io.connect('http://' + document.domain + ':' + location.port);
@@ -93,7 +108,7 @@
       $( 'main.msger-chat').append(`<div class="msg right-msg">
       <div
        class="msg-img"
-       style="background-image: url(https://i.imgur.com/H0akt1a.png)"
+       style="background-image: url({{ url_for('static',filename='img/user.png')}})"
       ></div>
 
       <div class="msg-bubble">
