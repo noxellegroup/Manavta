@@ -29,15 +29,13 @@ body {
 }
 
 .msger {
-  
   z-index: 1;
   display: flex;
   flex-flow: column wrap;
   justify-content: space-between;
   width: 100%;
   max-width: 867px;
-  
-  margin: 25px 10px;
+  margin: auto;
   height: calc(100% - 50px);
   border: var(--border);
   border-radius: 5px;
@@ -146,8 +144,7 @@ body {
   background-color: #1f2029;
   border: none;    margin-right: 10px;
   box-shadow: 0 4px 8px 0 rgba(21,21,21,.2);
-
-  
+  text-indent: 10px;
 }
 /* .msger-send-btn {
   margin-left: 10px;
@@ -187,21 +184,20 @@ body {
   text-align: center;
   border: none;
   background-color: #ffeba7;
-  color: #102770;
+  color: #1f2029;
   box-shadow: 0 8px 24px 0 rgba(255,235,167,.2);
 }
 .msger-send-btn:active,
 .msger-send-btn:focus{  
-  background-color: #102770;
+  background-color: #1f2029;
   color: #ffeba7;
   box-shadow: 0 8px 24px 0 rgba(16,39,112,.2);
 }
 .msger-send-btn:hover{  
-  background-color: #102770;
+  background-color: #1f2029;
   color: #ffeba7;
   box-shadow: 0 8px 24px 0 rgba(16,39,112,.2);
 }
-
 
 .msger-chat {
   background-color: #2a2b38;
