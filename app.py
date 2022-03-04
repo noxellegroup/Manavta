@@ -1,18 +1,32 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
 from flask_socketio import SocketIO
+from flask_mongoengine import MongoEngine
 import time
 import json
+import toml
 # Classifier
 from classifier import intent_identifier
 # Symptoms-Disease
 from symptoms_disease_predictor import symptoms_disease_predict
-# Disease-Description
-from disease_desc import disease_desc_display
+# Models
+from models import db, Diseases
+
+config = toml.load("config.toml")
 
 app = Flask(__name__)
 
 app.secret_key = 'canada$God7972#'
 socketio = SocketIO(app)
+
+app.config["MONGODB_SETTINGS"] = {'DB': config["database"], "host":config["database-host"]}
+
+db = MongoEngine(app)
+
+class Diseases(db.Document):
+    disease = db.StringField()
+    description = db.StringField()
+    def to_json(self):
+        return {"disease": self.disease, "description": self.description}
 
 @app.route('/')
 def sessions():
@@ -49,7 +63,7 @@ def user_response(data, methods=['GET', 'POST']):
                         diseases.append(i)
                 info = f""
                 for i in diseases:
-                    info += f"Here's what I know about {i}: " + disease_desc_display(i) + f" <br>"
+                    info += f"Here's what I know about {i}: " + Diseases.objects(disease=i).first().description + f" <br>"
                 data["response"] = info
             else:
                 data["response"] = "Coming soon."

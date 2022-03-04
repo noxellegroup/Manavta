@@ -45,8 +45,6 @@ df_pivoted.head()
 
 len(df_pivoted)
 
-
-
 x = df_pivoted[df_pivoted.columns[1:]]
 y = df_pivoted['cure_departments']
 df = df_pivoted
@@ -61,9 +59,9 @@ X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.001, rando
 # Extract features
 features = df.columns[1:]
 
-from sklearn.naive_bayes import MultinomialNB
-mnb = MultinomialNB()
-mnb = mnb.fit(X_train, y_train)
+from sklearn.ensemble import GradientBoostingClassifier
+gb = GradientBoostingClassifier()
+gb = gb.fit(X_train, y_train)
 
 feature_dict = {}
 for i,f in enumerate(features):
@@ -75,7 +73,8 @@ for i in ['asthmatic bronchitis']:
     sample_x[m] = 1
 
 # Predicting the Test set results
-y_pred = mnb.predict([sample_x])
+y_pred = gb.predict([sample_x])
 print(y_pred)
 
-joblib.dump(mnb, 'disease_department.joblib')
+# Saving the model
+joblib.dump(gb, 'disease_department.joblib')
