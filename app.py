@@ -62,8 +62,8 @@ def user_response(data, methods=['GET', 'POST']):
                     if "disease" in intent["args"][i]:
                         diseases.append(i)
                 info = f""
-                for i in diseases:
-                    info += f"Here's what I know about {i}: " + Diseases.objects(disease=i).first().description + f" <br>"
+                for disease in diseases:
+                    info += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description} <br>"
                 data["response"] = info
             else:
                 data["response"] = "Coming soon."
