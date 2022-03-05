@@ -21,8 +21,6 @@ app.config["MONGODB_SETTINGS"] = {'DB': config["database"], "host":config["datab
 
 db = MongoEngine(app)
 
-engine = pyttsx3.init()
-
 class Diseases(db.Document):
     disease = db.StringField()
     description = db.StringField()
@@ -41,8 +39,10 @@ def user_connect(data, methods=['GET', 'POST']):
     data["user_name"] = "Manav"
     data["greet"] = "Hey there! I'm Manav, your personal health assistant. Ask me anything &#128512;"
     socketio.emit('bot greet', data, callback=messageReceived)
+    engine = pyttsx3.init()
     engine.say(data["greet"][:len(data["greet"])-9])
     engine.runAndWait()
+    engine.stop()
         
 @socketio.on('user response')
 def user_response(data, methods=['GET', 'POST']):
@@ -72,8 +72,11 @@ def user_response(data, methods=['GET', 'POST']):
                 data["response"] = "Coming soon."
 
             socketio.emit('bot response', data, callback=messageReceived)
+            engine = pyttsx3.init()
             engine.say(data["response"])
             engine.runAndWait()
+            engine.stop()
+
         except Exception as e:
             pass
 
