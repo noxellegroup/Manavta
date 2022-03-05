@@ -51,6 +51,7 @@ body {
   color: #ffeba7;
   font-weight: bold;
   font-size: 20px;
+  cursor: context-menu;
 }
 
 .msger-chat {
@@ -214,7 +215,6 @@ body {
   text-decoration: none;
   display: inline-block;
   margin: 4px 2px;
-  cursor: context-menu;
   border-radius: 16px;
 }
 
