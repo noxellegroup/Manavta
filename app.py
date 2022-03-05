@@ -9,6 +9,8 @@ from classifier import intent_identifier
 from symptoms_disease_predictor import symptoms_disease_predict
 # Models
 from models import db, Diseases
+# Spell checker
+from spellchecker import SpellChecker
 
 config = toml.load("config.toml")
 
@@ -20,6 +22,8 @@ socketio = SocketIO(app)
 app.config["MONGODB_SETTINGS"] = {'DB': config["database"], "host":config["database-host"]}
 
 db = MongoEngine(app)
+
+spell = SpellChecker()
 
 class Diseases(db.Document):
     disease = db.StringField()
@@ -50,6 +54,14 @@ def user_response(data, methods=['GET', 'POST']):
     
     if "message" in data:
         try:
+            tokens = data["message"].split(" ")
+            misspelled = spell.unknown(tokens)
+
+            corrected_tokens = []
+            for word in misspelled:
+                corrected_tokens.append(spell.correction(word))
+
+            data["message"] = " ".join(corrected_tokens)
             intent = intent_identifier(data["message"])
             intent_type = intent["question_types"][0]
             if intent_type == "symptom_disease":
