@@ -29,7 +29,7 @@ class Diseases(db.Document):
 
 @app.route('/')
 def sessions():
-    return render_template('index.html')
+    return render_template('index.html', version=config["version"])
 
 def messageReceived(methods=['GET', 'POST']):
     print('Message was received')
