@@ -56,12 +56,12 @@ def user_response(data, methods=['GET', 'POST']):
         try:
             tokens = data["message"].split(" ")
             misspelled = spell.unknown(tokens)
+            if len(misspelled)!=0:
+                corrected_tokens = []
+                for word in misspelled:
+                    corrected_tokens.append(spell.correction(word))
+                data["message"] = " ".join(corrected_tokens)
 
-            corrected_tokens = []
-            for word in misspelled:
-                corrected_tokens.append(spell.correction(word))
-
-            data["message"] = " ".join(corrected_tokens)
             intent = intent_identifier(data["message"])
             intent_type = intent["question_types"][0]
             if intent_type == "symptom_disease":
@@ -90,7 +90,7 @@ def user_response(data, methods=['GET', 'POST']):
             engine.stop()
 
         except Exception as e:
-            pass
+           print(e)
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', debug=True)
