@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
+from flask_session import Session
 from flask_socketio import SocketIO
 from flask_mongoengine import MongoEngine
+from flask_github import GitHub
 import toml
 import pyttsx3
 # Classifier
@@ -16,12 +18,19 @@ config = toml.load("config.toml")
 
 app = Flask(__name__)
 
-app.secret_key = 'canada$God7972#'
+app.secret_key = config["secretkey"]
 socketio = SocketIO(app)
 
 app.config["MONGODB_SETTINGS"] = {'DB': config["database"], "host":config["database-host"]}
+app.config["GITHUB_CLIENT_ID"] = config["github-client-ID"]
+app.config["GITHUB_CLIENT_SECRET"] = config["github-client-secret"]
+app.config['SESSION_TYPE'] = 'filesystem'
+
+Session(app)
 
 db = MongoEngine(app)
+
+github = GitHub(app)
 
 spell = SpellChecker()
 
@@ -32,8 +41,36 @@ class Diseases(db.Document):
         return {"disease": self.disease, "description": self.description}
 
 @app.route('/')
-def sessions():
-    return render_template('index.html', version=config["version"])
+def chat():
+    if not session.get("username"):
+        return redirect(url_for("login"))
+    else:
+        return render_template('index.html', version=config["version"], username=session["username"])
+
+@app.route('/login')
+def login():
+    if not session.get("username"):
+        return github.authorize()
+    else:
+        return redirect(url_for("chat"))
+
+@app.route('/auth-callback')
+@github.authorized_handler
+def authorized(oauth_token):
+    if oauth_token is None:
+        print("Authorization failed.")
+        return redirect(url_for("login"))
+    elif not session.get("username"):
+        session["username"] = oauth_token
+        return "coming soon"
+    elif session.get("username"):
+        session["username"] = oauth_token
+        return redirect(url_for("chat"))
+
+@app.route('/logout')
+def logout():
+    session["username"] = None
+    return redirect(url_for("login"))
 
 def messageReceived(methods=['GET', 'POST']):
     print('Message was received')

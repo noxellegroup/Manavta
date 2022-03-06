@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="https://i.imgur.com/nRy6k91.png" rel="icon">
+    <link href="{{ url_for('static',filename='img/favicon.png')}}" rel="icon">
     <meta name="description" content="Manavta is revolutionizing healthcare.">
     <meta name="keywords" content="manavta, healthcare, apratim, earthing, abhishek tk, swapnil">
     <meta name="author" content="Noxelle">
@@ -53,16 +53,16 @@
     socket.emit('user connect', {
       data: 'User Connected'
     } )
-    var form = $( 'form' ).on( 'submit', function( e ) {
+    var form = $('form').on('submit', function( e ) {
       e.preventDefault()
-      let user_name = 'Test User'
-      let user_input = $( 'input.msger-input' ).val()
-      socket.emit( 'user response', {
+      let user_name = `{{ username }}`
+      let user_input = $('input.msger-input').val()
+      socket.emit('user response', {
         user_name : user_name,
         message : user_input
       } )
-      $( 'input.msger-input' ).val( '' ).focus()
-      $( 'input.username' ).hide()
+      $('input.msger-input').val( '' ).focus()
+      $('input.username').hide()
     } )
   } )
   socket.on('user response', function( msg ) {

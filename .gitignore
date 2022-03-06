@@ -2,4 +2,5 @@ venv/
 captcha/
 .vscode/
 __pycache__
+flask_session/
 config.toml
