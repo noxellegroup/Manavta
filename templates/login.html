@@ -2,12 +2,12 @@
 <html lang="en" >
 <head>
   <meta charset="UTF-8">
-  <title>Manavta | Login</title>
+  <title>Manavta | A Smart Healthcare Assistant</title>
   <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="{{ url_for('static',filename='img/favicon.png')}}" rel="icon">
-  <meta name="description" content="Manavta is revolutionizing healthcare.">
+    <meta name="description" content="Manavta is a Smart Healthcare Assistant with voice support and much more.">
     <meta name="keywords" content="manavta, healthcare, apratim, earthing, abhishek tk, swapnil">
     <meta name="author" content="Noxelle">
   <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css'>
@@ -15,22 +15,13 @@
 
 </head>
 <body>
-<!-- partial:index.partial.html -->
+
 <div class="container" id="container">
 	
 	<div class="form-container sign-in-container">
-		<form action="#">
-			<h1 style="color: white;">Sign in</h1>
-			<div class="social-container">
-				<a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-				<a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-				<a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
-			</div>
-			<span style="color: white;">or use your account</span>
-			<input type="email" placeholder="Email"/>
-			<input type="password" placeholder="Password" />
-			<a href="#">Forgot your password?</a>
-			<button>Sign In</button>
+		<form>
+			<h1 style="color: white;">Manavta</h1>
+			<a><i class="fab fa-github"></i> Connect using GitHub</a>
 		</form>
 	</div>
 	<div class="overlay-container">
@@ -42,10 +33,6 @@
 		</div>
 	</div>
 </div>
-
-
-<!-- partial -->
-  <script  src="{{ url_for('static',filename='css/login.js')}}"></script>
 
 </body>
 </html>

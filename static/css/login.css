@@ -44,7 +44,7 @@ a {
 	margin: 15px 0;
 }
 
-button {
+a {
 	border-radius: 20px;
 	border: 1px solid #ffeba7;
 	background-color: #ffeba7;
@@ -55,25 +55,16 @@ button {
 	letter-spacing: 1px;
 	text-transform: uppercase;
 	transition: transform 80ms ease-in;
-}
-
-
-
-button:active {
-	transform: scale(0.95);
-}
-
-button:focus {
-	outline: none;
-}
-
-button.ghost {
-	background-color: transparent;
-	border-color: #FFFFFF;
+	cursor: pointer;
 }
 
 form {
-	background-color: #1f2029;
+    background-color: #2a2b38;
+    background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
+    background-repeat: no-repeat;
+    background-size: 2000px;
+    background-position-x: -783px;
+    background-position-y: -124px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -96,9 +87,7 @@ input {
 .container {
 	background-color: #fff;
 	border-radius: 10px;
-  	box-shadow: 0 14px 28px rgba(0,0,0,0.25), 
-			0 10px 10px rgba(0,0,0,0.22);
-	/* position: relative; */
+  	box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
 	overflow: hidden;
 	width: 100%;
 	height: 100%;
@@ -118,8 +107,6 @@ input {
 	width: 50%;
 	z-index: 2;
 }
-
-
 
 @keyframes show {
 	0%, 49.99% {
