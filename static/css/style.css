@@ -175,6 +175,8 @@ body {
   color: #1f2029;
   box-shadow: 0 8px 24px 0 rgba(255,235,167,.2);
 }
+
+
 .msger-send-btn:active,
 .msger-send-btn:focus{  
   background-color: #1f2029;
@@ -219,3 +221,24 @@ body {
 }
 
 
+#msger-mic{
+  box-shadow: 0 8px 24px 0 rgb(255 235 167 / 20%);
+}
+
+#msger-mic:hover{
+  background-color: #1f2029;
+  color:#ffeba7;
+  transition-duration: 0.5s;
+  box-shadow: 0 8px 24px 0 rgba(16,39,112,.2);
+}
+
+
+
+
+#msger-mic:active {
+  background-color: #1f2029;
+  box-shadow: 0 5px #ffeba7;
+  animation: ripple 5s ease-out infinite;
+  border-radius: 100%;
+  z-index: -1;
+}

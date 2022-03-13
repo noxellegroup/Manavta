@@ -33,7 +33,7 @@
     </div>
   </header>
 
-  <main class="msger-chat">
+  <main class="msger-chat" id="toscroll">
     <div class="msg right-msg">
     </div>
   </main>
@@ -135,6 +135,17 @@
     }
   })
 </script>
+
+<script>
+ const theElement = document.getElementById('toscroll');
+
+const scrollToBottom = (node) => {
+	node.scrollTop = node.scrollHeight;
+}
+
+scrollToBottom(theElement);
+</script>
+
 <script src='https://use.fontawesome.com/releases/v5.0.13/js/all.js'></script>
 
 </body>

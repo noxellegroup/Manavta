@@ -54,6 +54,12 @@ def login():
     else:
         return redirect(url_for("chat"))
 
+
+@app.route('/logintest')
+def logintest():
+    return render_template('login.html')
+
+
 @app.route('/auth-callback')
 @github.authorized_handler
 def authorized(oauth_token):
