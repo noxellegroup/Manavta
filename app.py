@@ -15,6 +15,8 @@ from accompany_disease_predictor import accompany_disease_predict
 from models import db, Diseases
 # Spell checker
 from spellchecker import SpellChecker
+# Punctuation Handler
+from punctuation_handler import punctuation_handler
 
 config = toml.load("config.toml")
 
@@ -107,6 +109,7 @@ def user_response(data, methods=['GET', 'POST']):
     
     if "message" in data:
         try:
+            data["message"] = punctuation_handler(data["message"])
             tokens = data["message"].split(" ")
             misspelled = spell.unknown(tokens)
             if len(misspelled)!=0:
