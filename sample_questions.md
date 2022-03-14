@@ -6,3 +6,4 @@ Sample Questions:
 * More info on Lung bullae and SARS
 * Patient is going in cardiac arrest and twitching
 * I'm suffering from irritability, abdominal pain and dizziness from the last few days
+* What are the complications of pneumonia and lung abscess?

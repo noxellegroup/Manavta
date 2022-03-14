@@ -113,10 +113,8 @@ def user_response(data, methods=['GET', 'POST']):
             tokens = data["message"].split(" ")
             misspelled = spell.unknown(tokens)
             if len(misspelled)!=0:
-                corrected_tokens = []
                 for word in misspelled:
-                    corrected_tokens.append(spell.correction(word))
-                data["message"] = " ".join(corrected_tokens)
+                    data["message"] = data["message"].replace(word, spell.correction(word))
 
             intent = intent_identifier(data["message"])
             intent_type = intent["question_types"][0]
