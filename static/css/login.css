@@ -54,8 +54,15 @@ a {
 	padding: 12px 45px;
 	letter-spacing: 1px;
 	text-transform: uppercase;
-	transition: transform 80ms ease-in;
+	transition: 0.5s ease-in;
 	cursor: pointer;
+}
+
+a:hover {
+	background-color: #1f2029;
+	border: 1px solid #1f2029;
+	color: #ffeba7;
+	transition: 0.5s ease-out;
 }
 
 form {
