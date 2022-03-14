@@ -58,6 +58,12 @@ def login():
 def authorize():
     return github.authorize()
 
+@github.access_token_getter
+def token_getter():
+    token = session["token"]
+    if token is not None:
+        return token
+
 @app.route('/auth-callback')
 @github.authorized_handler
 def authorized(oauth_token):
@@ -65,10 +71,14 @@ def authorized(oauth_token):
         # Login failed
         return redirect(url_for("login"))
     elif not session.get("username"):
-        session["username"] = oauth_token
+        session["token"] = oauth_token
+        user = github.get('/user')
+        session["username"] = user['login']
         return redirect(url_for("chat"))
     elif session.get("username"):
-        session["username"] = oauth_token
+        session["token"] = oauth_token
+        user = github.get('/user')
+        session["username"] = user['login']
         return redirect(url_for("chat"))
 
 @app.route('/logout')
