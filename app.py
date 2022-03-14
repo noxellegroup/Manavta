@@ -117,6 +117,9 @@ def user_response(data, methods=['GET', 'POST']):
 
             intent = intent_identifier(data["message"])
             intent_type = intent["question_types"][0]
+
+            message = f""
+
             if intent_type == "symptom_disease":
                 symptoms = []
                 for i in intent["args"]:
@@ -124,6 +127,7 @@ def user_response(data, methods=['GET', 'POST']):
                         symptoms.append(i)
                 disease = symptoms_disease_predict(symptoms)
                 data["response"] = f"You most likely have {disease}."
+                message = data["response"]
             elif intent_type == "disease_desc":
                 diseases = []
                 for i in intent["args"]:
@@ -131,7 +135,12 @@ def user_response(data, methods=['GET', 'POST']):
                         diseases.append(i)
                 info = f""
                 for disease in diseases:
-                    info += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description} <br>"
+                    if (len(diseases)==1):
+                        info += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description}"
+                        message += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description}"
+                    else:
+                        info += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description} <br>"
+                        message += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description} and"
                 data["response"] = info
             elif intent_type == "disease_accompany":
                 accompanies = []
@@ -140,12 +149,14 @@ def user_response(data, methods=['GET', 'POST']):
                         accompanies.append(i)
                 disease = accompany_disease_predict(accompanies)
                 data["response"] = f"You can develop complications such as {disease}."
+                message = data["response"]
             else:
                 data["response"] = "Coming soon."
+                message = data["response"]
 
             socketio.emit('bot response', data, callback=messageReceived)
             engine = pyttsx3.init()
-            engine.say(data["response"])
+            engine.say(message)
             engine.runAndWait()
             engine.stop()
 
