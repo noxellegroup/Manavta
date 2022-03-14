@@ -45,30 +45,28 @@ def chat():
     if not session.get("username"):
         return redirect(url_for("login"))
     else:
-        return render_template('index.html', version=config["version"], username=session["username"])
+        return render_template("index.html", version=config["version"], username=session["username"])
 
 @app.route('/login')
 def login():
     if not session.get("username"):
-        return github.authorize()
+        return render_template("login.html")
     else:
         return redirect(url_for("chat"))
 
-
-@app.route('/logintest')
-def logintest():
-    return render_template('login.html')
-
+@app.route('/authorize')
+def authorize():
+    return github.authorize()
 
 @app.route('/auth-callback')
 @github.authorized_handler
 def authorized(oauth_token):
     if oauth_token is None:
-        print("Authorization failed.")
+        # Login failed
         return redirect(url_for("login"))
     elif not session.get("username"):
         session["username"] = oauth_token
-        return "coming soon"
+        return redirect(url_for("chat"))
     elif session.get("username"):
         session["username"] = oauth_token
         return redirect(url_for("chat"))

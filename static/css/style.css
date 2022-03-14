@@ -220,7 +220,6 @@ body {
   border-radius: 16px;
 }
 
-
 #msger-mic{
   box-shadow: 0 8px 24px 0 rgb(255 235 167 / 20%);
 }
@@ -231,9 +230,6 @@ body {
   transition-duration: 0.5s;
   box-shadow: 0 8px 24px 0 rgba(16,39,112,.2);
 }
-
-
-
 
 #msger-mic:active {
   background-color: #1f2029;

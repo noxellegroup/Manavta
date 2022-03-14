@@ -233,3 +233,13 @@ footer a {
     color: #3c97bf;
     text-decoration: none;
 }
+
+@media only screen and (max-width: 768px) {
+	.sign-in-container {
+		width: 100%;
+	}
+
+	.overlay-container {
+		width: 0%;
+	}
+  }
