@@ -9,6 +9,8 @@ import pyttsx3
 from classifier import intent_identifier
 # Symptoms-Disease
 from symptoms_disease_predictor import symptoms_disease_predict
+# Accompany-Disease
+from accompany_disease_predictor import accompany_disease_predict
 # Models
 from models import db, Diseases
 # Spell checker
@@ -131,6 +133,13 @@ def user_response(data, methods=['GET', 'POST']):
                 for disease in diseases:
                     info += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description} <br>"
                 data["response"] = info
+            elif intent_type == "disease_accompany":
+                accompanies = []
+                for i in intent["args"]:
+                    if "disease" in intent["args"][i]:
+                        accompanies.append(i)
+                disease = accompany_disease_predict(accompanies)
+                data["response"] = f"You can develop complications such as {disease}."
             else:
                 data["response"] = "Coming soon."
 
