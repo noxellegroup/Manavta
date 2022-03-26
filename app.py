@@ -137,13 +137,17 @@ def user_response(data, methods=['GET', 'POST']):
                     if "disease" in intent["args"][i]:
                         diseases.append(i)
                 info = f""
-                for disease in diseases:
+                for index, disease in enumerate(diseases):
                     if (len(diseases)==1):
                         info += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description}"
                         message += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description}"
                     else:
-                        info += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description} <br>"
-                        message += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description} and"
+                        if (index!=(len(diseases)-1)):
+                            info += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description} <br>"
+                            message += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description} and"
+                        else:
+                            info += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description}"
+                            message += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description}"
                 data["response"] = info
             elif intent_type == "disease_accompany":
                 accompanies = []
@@ -153,6 +157,53 @@ def user_response(data, methods=['GET', 'POST']):
                 disease = accompany_disease_predict(accompanies)
                 data["response"] = f"You can develop complications such as {disease}."
                 message = data["response"]
+            elif intent_type == "disease_department":
+                diseases = []
+                for i in intent["args"]:
+                    if "disease" in intent["args"][i]:
+                        diseases.append(i)
+                info = f""
+                for index, disease in enumerate(diseases):
+                    departments = Diseases.objects(disease=disease).first().departments
+                    disease = disease.capitalize()
+                    if (len(departments)==1):
+                        result = departments[0].capitalize()
+                    elif (len(departments)==2):
+                        result = f"{departments[0].capitalize()} ({departments[1].capitalize()})"
+                    if (len(diseases)==1):
+                        info += f"{disease} belongs to: {result}"
+                        message += f"{disease} belongs to: {result}"
+                    else:
+                        if (index!=(len(diseases)-1)):
+                            info += f"{disease} belongs to: {result} <br>"
+                            message += f"{disease} belongs to: {result} and"
+                        else:
+                            info += f"{disease} belongs to: {result}"
+                            message += f"{disease} belongs to: {result}"
+                data["response"] = info
+            elif intent_type == "disease_cure":
+                diseases = []
+                for i in intent["args"]:
+                    if "disease" in intent["args"][i]:
+                        diseases.append(i)
+                info = f""
+                for index, disease in enumerate(diseases):
+                    cures = Diseases.objects(disease=disease).first().cure
+                    if (len(cures)==1):
+                        result = cures[0].capitalize()
+                    elif (len(cures)>1):
+                        result = ", ".join(cures).capitalize()
+                    if (len(diseases)==1):
+                        info += f"To treat {disease} you need: {result}"
+                        message += f"To treat {disease} you need: {result}"
+                    else:
+                        if (index!=(len(diseases)-1)):
+                            info += f"To treat {disease} you need: {result} <br>"
+                            message += f"To treat {disease} you need: {result} and"
+                        else:
+                            info += f"To treat {disease} you need: {result}"
+                            message += f"To treat {disease} you need: {result}"
+                data["response"] = info
             else:
                 data["response"] = "Coming soon."
                 message = data["response"]

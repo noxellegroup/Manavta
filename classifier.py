@@ -23,7 +23,6 @@ class QuestionClassifier:
         self.prevent_qwds = ['prevention', 'prevent', 'resist', 'guard', 'against','escape', 'avoid', 'how can I not', 'how not to', 'why not', 'how to prevent']
         self.cureway_qwds = ['treat', 'heal', 'heals', 'cure', 'cures', 'how to treat', 'how to heal', 'how to cure', 'treatment', 'therapy']
         self.belong_qwds = ['what belongs to', 'belong', 'belongs','section','what section', 'department']
-        self.cure_qwds = ['what to treat', 'indication', 'what is the use', 'benefit', 'usefulness']
 
     def classify(self, question):
         data = {}
@@ -62,6 +61,10 @@ class QuestionClassifier:
             
         if self.check_words(self.cureway_qwds, question2) and 'disease' in types:
             question_type = 'disease_cure'
+            question_types.append(question_type)
+
+        if self.check_words(self.belong_qwds, question2) and 'disease' in types:
+            question_type = 'disease_department'
             question_types.append(question_type)
 
         if question_types == [] and 'disease' in types and 'symptom' not in types:
