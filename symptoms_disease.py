@@ -22,7 +22,7 @@ ds1['symptoms'] = results
 
 ds1.drop(['symptom'], axis=1)
 
-ds2=ds1[["name", "symptoms"]]
+ds2 = ds1[["name", "symptoms"]]
 ds2 = ds2.explode('symptoms')
 ds2.size
 ds2.head()

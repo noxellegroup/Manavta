@@ -22,7 +22,7 @@ ds1['cure_departments'] = results
 
 ds1.drop(['cure_department'], axis=1)
 
-ds2=ds1[["name", "cure_departments"]]
+ds2 = ds1[["name", "cure_departments"]]
 ds2 = ds2.explode('cure_departments')
 ds2.size
 ds2.head()
@@ -68,7 +68,7 @@ for i,f in enumerate(features):
     feature_dict[f] = i
 
 sample_x = [0] * len(features)
-for i in ['asthmatic bronchitis']:
+for i in ['caffeine and aminophylline poisoning']:
     m = feature_dict[i]
     sample_x[m] = 1
 

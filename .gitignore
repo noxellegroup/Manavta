@@ -3,4 +3,5 @@ captcha/
 .vscode/
 __pycache__
 flask_session/
+db_update.py
 config.toml

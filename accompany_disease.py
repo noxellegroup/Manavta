@@ -22,7 +22,7 @@ ds1['accompanies'] = results
 
 ds1.drop(['accompany'], axis=1)
 
-ds2=ds1[["name", "accompanies"]]
+ds2 = ds1[["name", "accompanies"]]
 ds2 = ds2.explode('accompanies')
 ds2.size
 ds2.head()

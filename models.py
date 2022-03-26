@@ -3,10 +3,12 @@ from flask_mongoengine import MongoEngine
 db = MongoEngine()
 
 class Diseases(db.Document):
-    ''' Class for defining structure of diseases and their corresponding description
+    ''' Class for defining structure of diseases and their corresponding attributes
     '''
     disease = db.StringField(required=True)
     description = db.StringField(required=True)
+    departments = db.ListField(db.StringField(required=True))
+    cure = db.ListField(db.StringField(required=True))
 
     meta = {
         'collection': 'disease-description', # collection name

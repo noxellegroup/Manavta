@@ -25,7 +25,7 @@ app = Flask(__name__)
 app.secret_key = config["secretkey"]
 socketio = SocketIO(app)
 
-app.config["MONGODB_SETTINGS"] = {'DB': config["database"], "host":config["database-host"]}
+app.config["MONGODB_SETTINGS"] = {'DB': config["database"], "host": config["database-host"]}
 app.config["GITHUB_CLIENT_ID"] = config["github-client-ID"]
 app.config["GITHUB_CLIENT_SECRET"] = config["github-client-secret"]
 app.config['SESSION_TYPE'] = 'filesystem'
@@ -41,8 +41,10 @@ spell = SpellChecker()
 class Diseases(db.Document):
     disease = db.StringField()
     description = db.StringField()
+    departments = db.ListField(db.StringField())
+    cure = db.ListField(db.StringField())
     def to_json(self):
-        return {"disease": self.disease, "description": self.description}
+        return {"disease": self.disease, "description": self.description, "departments": self.departments, "cure": self.cure}
 
 @app.route('/')
 def chat():

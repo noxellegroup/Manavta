@@ -23,7 +23,7 @@ def accompany_disease_predict(symptoms):
 
     ds1.drop(['accompany'], axis=1)
 
-    ds2=ds1[["name", "accompanies"]]
+    ds2 = ds1[["name", "accompanies"]]
     ds2 = ds2.explode('accompanies')
 
     df_1 = pd.get_dummies(ds2.accompanies)
