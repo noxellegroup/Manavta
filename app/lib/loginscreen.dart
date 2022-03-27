@@ -140,13 +140,10 @@ padding: EdgeInsets.all(20),
                 child: SignInButton(
 
                   Buttons.GitHub,
-                  text: "Sign in with Twitter",
+                  text: "Sign in with Github",
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                   onPressed: () async {
                      onClickGitHubLoginButton();
-
-
-
                   },
                 )),
 

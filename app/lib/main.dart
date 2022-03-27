@@ -1,34 +1,34 @@
 import 'package:bubble/bubble.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-//import 'package:flutter_dialogflow/dialogflow_v2.dart';
 import 'package:intl/intl.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'auth_service.dart';
 import 'loginscreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+
 var route = '/auth';
 final AuthService authService = AuthService();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
 
+  //const MyApp({ }) ;
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Manavta',
-      theme: ThemeData.dark(),
-      debugShowCheckedModeBanner: false,
-      home: LandingPage(),
-      //home: MyHomePage(title: 'Manavta'),
-    );
+          title: 'Manavta',
+          theme: ThemeData.dark(),
+          debugShowCheckedModeBanner: false,
+          home: LandingPage(),
+          //home: MyHomePage(title: 'Manavta'),
+           );
   }
 }
 
@@ -71,24 +71,44 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // void response(query) async {
-  //   AuthGoogle authGoogle = await AuthGoogle(
-  //       fileJson: "assets/service.json")
-  //       .build();
-  //   Dialogflow dialogflow =
-  //   Dialogflow(authGoogle: authGoogle, language: Language.english);
-  //   AIResponse aiResponse = await dialogflow.detectIntent(query);
-  //   setState(() {
-  //     messsages.insert(0, {
-  //       "data": 0,
-  //       "message": aiResponse.getListMessage()[0]["text"]["text"][0].toString()
-  //     });
-  //   });
-  //
-  //
-  //   print(aiResponse.getListMessage()[0]["text"]["text"][0].toString());
-  // }
 
+
+  void response(query) async {
+
+    HttpLink httpLink = HttpLink(
+      'https://countries.trevorblades.com/'
+    );
+
+    GraphQLClient graphql = GraphQLClient(
+      link: httpLink,
+      cache: GraphQLCache(),
+    );
+
+    final String whattofetch = """
+    query fetchthis {
+      country(code: "${query}"){
+      capital
+      }
+    }
+  """;
+
+    QueryOptions q = QueryOptions(document: gql(whattofetch));
+
+
+    var result = await graphql.query(q);
+    String resultE = result.data!['country']['capital'];
+
+    setState(() {
+      messsages.insert(0, {
+        "data": 0,
+        "message":resultE
+      });
+    });
+    print('hello');
+   print(result.data!['country']['capital']);
+
+
+  }
 
   final messageInsert = TextEditingController();
   List<Map> messsages = [];
@@ -115,9 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
           ],),
         ),
-        // Text(
-        //   "Manavta",
-        // ),
+
       ),
       body: Container(
 
@@ -146,14 +164,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     itemBuilder: (context, index) => chat(
                         messsages[index]["message"].toString(),
                         messsages[index]["data"]))),
-            // SizedBox(
-            //   height: 20,
-            // ),
 
-            // Divider(
-            //   height: 5.0,
-            //   color: Colors.blue,
-            // ),
             Container(
 
               decoration: BoxDecoration(
@@ -177,7 +188,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPressed: null,
                   icon: Icon(Icons.mic_rounded, color: Colors.amberAccent[100],
                      size: 35,),
-                 // color: Color.fromRGBO(35, 39, 42,100),
+
                 ),
 
                 title: Container(
@@ -187,15 +198,14 @@ class _MyHomePageState extends State<MyHomePage> {
                         15)),
                     color: Color.fromRGBO(220, 220, 220, 100),
                   ),
-                  //padding: EdgeInsets.only(left: 15),
+
                   child: Padding(
                     padding: const EdgeInsets.only(left: 10),
                     child: TextFormField(
 
                       controller: messageInsert,
                       decoration: InputDecoration(
-                        // fillColor: Color.fromRGBO(44, 47, 51, 100),
-                        // filled: true,
+
                         hintText: "Enter a Message...",
                         hintStyle: TextStyle(
                             color: Colors.black26
@@ -235,7 +245,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           messsages.insert(0,
                               {"data": 1, "message": messageInsert.text});
                         });
-                        // response(messageInsert.text);
+                        response(messageInsert.text);
                         messageInsert.clear();
                       }
                       FocusScopeNode currentFocus = FocusScope.of(context);
@@ -257,7 +267,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  //for better one i have use the bubble package check out the pubspec.yaml
+
 
   Widget chat(String message, int data) {
     return Container(

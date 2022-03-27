@@ -47,9 +47,8 @@ dependencies:
   firebase_messaging_platform_interface: 3.1.6
   firebase_messaging: ^11.2.6
   firebase_auth: 2.0.0
+  graphql_flutter: ^5.0.1
 #  github_sign_in: ^0.0.4
-
-
 
 dev_dependencies:
   flutter_test:
