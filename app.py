@@ -3,8 +3,11 @@ from flask_session import Session
 from flask_socketio import SocketIO
 from flask_mongoengine import MongoEngine
 from flask_github import GitHub
+from ariadne import graphql_sync, make_executable_schema, load_schema_from_path, ObjectType, QueryType
+from ariadne.constants import PLAYGROUND_HTML
 import toml
 import pyttsx3
+import resolvers as r
 # Classifier
 from classifier import intent_identifier
 # Symptoms-Disease
@@ -38,6 +41,15 @@ github = GitHub(app)
 
 spell = SpellChecker()
 
+type_defs = load_schema_from_path('schema.graphql')
+
+query = QueryType()
+gqlDiseases = ObjectType('Diseases')
+
+query.set_field('diseases_with_name', r.diseases_with_name)
+
+schema = make_executable_schema(type_defs, [gqlDiseases, query])
+
 class Diseases(db.Document):
     disease = db.StringField()
     description = db.StringField()
@@ -45,6 +57,17 @@ class Diseases(db.Document):
     cure = db.ListField(db.StringField())
     def to_json(self):
         return {"disease": self.disease, "description": self.description, "departments": self.departments, "cure": self.cure}
+
+@app.route('/graphql', methods=['GET'])
+def playground():
+    return PLAYGROUND_HTML, 200
+
+@app.route('/graphql', methods=['POST'])
+def graphql_server():
+    data = request.get_json()
+    success, result = graphql_sync(schema, data, context_value=None, debug=app.debug)
+    status_code = 200 if success else 400
+    return jsonify(result), status_code
 
 @app.route('/')
 def chat():

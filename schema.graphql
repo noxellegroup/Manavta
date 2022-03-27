@@ -1,0 +1,11 @@
+type Query {
+    diseases_with_name(disease: String!): Diseases
+}
+
+type Diseases {
+    id: ID!
+    disease: String!
+    description: String!
+    departments: [String!]
+    cure: [String!]
+}
