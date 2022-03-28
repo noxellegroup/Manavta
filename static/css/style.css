@@ -239,3 +239,8 @@ body {
   border-radius: 100%;
   z-index: -1;
 }
+
+.mic {
+  background: none;
+  cursor: pointer;
+}

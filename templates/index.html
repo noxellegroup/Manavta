@@ -44,8 +44,8 @@
   </main>
 
   <form class="msger-inputarea">
-    <a href=""><i class="fa fa-microphone" id="msger-mic"></i></a>
-    <input type="text" class="msger-input" placeholder="Enter your message...">
+    <button class="mic" type="button" onclick="convert();"><i class="fa fa-microphone" id="msger-mic"></i></button>
+    <input type="text" class="msger-input" placeholder="Enter your message..." id="message">
     <input type="submit" class="msger-send-btn" value="Send" >
   </form>
 </section>
@@ -142,7 +142,7 @@
 </script>
 
 <script>
- const theElement = document.getElementById('toscroll');
+const theElement = document.getElementById('toscroll');
 
 const scrollToBottom = (node) => {
 	node.scrollTop = node.scrollHeight;
@@ -159,6 +159,49 @@ scrollToBottom(theElement);
 	}, 1000);	
 })
 </script>
+
+<script type="text/javascript">	
+  var r = document.getElementById('message');
+  var speechRecognizer = new webkitSpeechRecognition();
+  var start = true;
+    
+  function convert() {
+    if(start){
+      if ('webkitSpeechRecognition' in window) {
+        var mic = document.getElementById("msger-mic");
+        mic.setAttribute("class", "fa fa-pause"); 
+        speechRecognizer.continuous = true;
+        speechRecognizer.interimResults = true;
+        speechRecognizer.lang = 'en-IN';
+        speechRecognizer.start();
+        var finalTranscripts = '';
+        speechRecognizer.onresult = function(event){
+          var interimTranscripts = '';
+          for(var i = event.resultIndex; i < event.results.length; i++){
+            var transcript = event.results[i][0].transcript;
+            transcript.replace("\n", "<br>");
+            if(event.results[i].isFinal){
+              finalTranscripts += transcript;
+            }else{
+              interimTranscripts += transcript;
+            }
+          }
+          r.value = finalTranscripts + interimTranscripts ;
+        };
+        speechRecognizer.onerror = function (event) {
+        };
+        start = false;
+      } else {
+        r.innerHTML = 'No browser support. Please upgrade your browser';
+      }
+    } else {
+      speechRecognizer.stop();
+      var mic = document.getElementById("msger-mic");
+      mic.setAttribute("class", "fa fa-microphone");
+      start = true;
+    }
+  }
+  </script>
 
 <script src='https://use.fontawesome.com/releases/v5.0.13/js/all.js'></script>
 
