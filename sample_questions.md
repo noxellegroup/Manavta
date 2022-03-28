@@ -7,3 +7,5 @@ Sample Questions:
 * Patient is going in cardiac arrest and twitching
 * I'm suffering from irritability, abdominal pain and dizziness from the last few days
 * What are the complications of pneumonia and lung abscess?
+* How to treat someone poisoned by carbon monoxide?
+* What department does lung abscess belong to?
