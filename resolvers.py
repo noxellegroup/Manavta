@@ -75,7 +75,7 @@ def chatbot_dialogue(_, info, message):
             else:
                 if (index!=(len(diseases)-1)):
                     info += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description} <br>"
-                    message += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description} and"
+                    message += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description} and "
                 else:
                     info += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description}"
                     message += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description}"
@@ -107,7 +107,7 @@ def chatbot_dialogue(_, info, message):
             else:
                 if (index!=(len(diseases)-1)):
                     info += f"{disease} belongs to: {result} <br>"
-                    message += f"{disease} belongs to: {result} and"
+                    message += f"{disease} belongs to: {result} and "
                 else:
                     info += f"{disease} belongs to: {result}"
                     message += f"{disease} belongs to: {result}"
@@ -130,7 +130,7 @@ def chatbot_dialogue(_, info, message):
             else:
                 if (index!=(len(diseases)-1)):
                     info += f"To treat {disease} you need: {result} <br>"
-                    message += f"To treat {disease} you need: {result} and"
+                    message += f"To treat {disease} you need: {result} and "
                 else:
                     info += f"To treat {disease} you need: {result}"
                     message += f"To treat {disease} you need: {result}"
