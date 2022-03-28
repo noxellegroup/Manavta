@@ -45,10 +45,13 @@ type_defs = load_schema_from_path('schema.graphql')
 
 query = QueryType()
 gqlDiseases = ObjectType('Diseases')
+gqlDialogue = ObjectType('Dialogue')
 
 query.set_field('diseases_with_name', r.diseases_with_name)
+query.set_field('diseases_with_id', r.diseases_with_id)
+query.set_field('chatbot_dialogue', r.chatbot_dialogue)
 
-schema = make_executable_schema(type_defs, [gqlDiseases, query])
+schema = make_executable_schema(type_defs, [gqlDiseases, gqlDialogue, query])
 
 class Diseases(db.Document):
     disease = db.StringField()

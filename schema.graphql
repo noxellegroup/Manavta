@@ -1,5 +1,7 @@
 type Query {
     diseases_with_name(disease: String!): Diseases
+    diseases_with_id(id: ID!): Diseases
+    chatbot_dialogue(message: String!): Dialogue
 }
 
 type Diseases {
@@ -8,4 +10,8 @@ type Diseases {
     description: String!
     departments: [String!]
     cure: [String!]
+}
+
+type Dialogue {
+    response: String
 }
