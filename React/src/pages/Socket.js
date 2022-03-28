@@ -3,7 +3,7 @@ import io from "socket.io-client";
 import $ from 'jquery';
 
 export default function Socket() {      
-    var socket = io.connect(`${'http://localhost:5000/'}`);
+    var socket = io.connect(`${'http://' + document.domain + ':' + window.location.port}`);
     socket.on('connect', function() {
       socket.emit('user connect', {
         data: 'User Connected'

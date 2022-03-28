@@ -32,6 +32,7 @@ export default function Home() {
     </form>
   </section>
 
+    <Socket/> 
   
   {/* <script>
    const theElement = document.getElementById('toscroll');
