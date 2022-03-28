@@ -5,3 +5,4 @@ __pycache__
 flask_session/
 db_update.py
 config.toml
+frontend/
