@@ -7,8 +7,8 @@ from ariadne import graphql_sync, make_executable_schema, load_schema_from_path,
 from ariadne.constants import PLAYGROUND_HTML
 import toml
 import os
-import pyttsx3
 import resolvers as r
+import pyttsx3
 import platform
 # Classifier
 from classifier import intent_identifier
