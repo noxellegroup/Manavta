@@ -44,7 +44,7 @@
         {
             "tag": "fav",
             "patterns": ["I need a favour", "can you help me"],
-            "responses": ["Well, go ahead and name it i see whether i can be able to help"],
+            "responses": ["Well, go ahead and name it I see whether I can be able to help"],
             "context": [""]
         },
         {

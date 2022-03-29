@@ -9,3 +9,11 @@ Sample Questions:
 * What are the complications of pneumonia and lung abscess?
 * How to treat someone poisoned by carbon monoxide?
 * What department does lung abscess belong to?
+
+General Questions
+* Hi I'm abc
+* Who are you?
+* What is AI?
+* Can you help me?
+* You sound like data
+* What language are you written in?
