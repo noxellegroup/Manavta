@@ -6,7 +6,6 @@ from flask_github import GitHub
 from ariadne import graphql_sync, make_executable_schema, load_schema_from_path, ObjectType, QueryType
 from ariadne.constants import PLAYGROUND_HTML
 import toml
-import os
 import resolvers as r
 import pyttsx3
 import platform
@@ -28,7 +27,6 @@ from punctuation_handler import punctuation_handler
 config = toml.load("config.toml")
 
 app = Flask(__name__)
-port = int(os.environ.get('PORT', 5000))
 
 app.secret_key = config["secretkey"]
 socketio = SocketIO(app)
@@ -257,4 +255,4 @@ def user_response(data, methods=['GET', 'POST']):
            print(e)
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=port, debug=True)
+    socketio.run(app)
