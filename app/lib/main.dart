@@ -1,3 +1,4 @@
+import 'package:avatar_glow/avatar_glow.dart';
 import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -7,7 +8,7 @@ import 'loginscreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 var route = '/auth';
 final AuthService authService = AuthService();
 Future<void> main() async {
@@ -71,6 +72,21 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+  //speech to text
+
+  late stt.SpeechToText _speech;
+  bool _isListening = false;
+  String _text = '';
+  double _confidence = 1.0;
+  //speech
+  @override
+  void initState() {
+
+    super.initState();
+    _speech=stt.SpeechToText();
+
+  }
 
 
   void response(query) async {
@@ -138,8 +154,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
       ),
       body: Container(
-
-
         decoration: BoxDecoration(
             image: DecorationImage(image: Svg(
               'assets/pat.svg',
@@ -166,7 +180,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         messsages[index]["data"]))),
 
             Container(
-
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(50),
                   boxShadow: [
@@ -184,29 +197,43 @@ class _MyHomePageState extends State<MyHomePage> {
 
               child: ListTile(
 
-                leading: IconButton(
-                  onPressed: null,
-                  icon: Icon(Icons.mic_rounded, color: Colors.amberAccent[100],
-                     size: 35,),
+                leading: AvatarGlow(
+                  animate: _isListening,
+                  glowColor: Colors.amberAccent,
+                  endRadius: 40,
+                  duration: const Duration(milliseconds: 2000),
+                  repeatPauseDuration: const Duration(milliseconds: 100),
+                  repeat: true,
+                  child: IconButton(
+                    onPressed: _listen,
+                    icon: Icon(_isListening ? Icons.mic : Icons.mic_none, color: Colors.amberAccent[100],
+                       size: 25,
+                    ),
 
+                  ),
                 ),
 
                 title: Container(
                   height: MediaQuery.of(context).size.height*0.05,
                   decoration: BoxDecoration(
+
                     borderRadius: BorderRadius.all(Radius.circular(
                         15)),
                     color: Color.fromRGBO(220, 220, 220, 100),
                   ),
 
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10),
+                  child: Container(
+                    //padding: const EdgeInsets.all(),
+
+                   padding: EdgeInsets.only(left:MediaQuery.of(context).size.width*0.02,right: MediaQuery.of(context).size.width*0.02 ),
                     child: TextFormField(
 
+keyboardType: TextInputType.multiline,
+                      //maxLines: null,
                       controller: messageInsert,
                       decoration: InputDecoration(
-
-                        hintText: "Enter a Message...",
+                        isDense: true,
+                        hintText: "Ask Manavta",
                         hintStyle: TextStyle(
                             color: Colors.black26
                         ),
@@ -330,4 +357,65 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+
+  void _listen() async {
+    if (!_isListening) {
+      bool available = await _speech.initialize(
+        onStatus: (val) => print('onStatus: $val'),
+        onError: (val) => print('onError: $val'),
+      );
+      if (available) {
+        setState(() => _isListening = true);
+        _speech.listen(
+          onResult: (val) => setState(() {
+            _text = val.recognizedWords;
+
+            if (val.hasConfidenceRating && val.confidence > 0) {
+              _confidence = val.confidence;
+            }
+          }),
+        );
+      }
+    } else {
+
+      setState(() {
+        _isListening=false;
+showDialog(context: context, barrierDismissible: true,builder: (_)=>
+  AlertDialog(
+
+    title:Container(
+        padding: EdgeInsets.all(10),
+        child: Text(_text)),
+    actions: [
+      TextButton(onPressed: (){
+
+          setState(() {
+            messsages.insert(0,
+                {"data": 1, "message": _text});
+          });
+          response(_text.toString());
+          messageInsert.clear();
+          Navigator.pop(context);
+        // FocusScopeNode currentFocus
+        // FocusScope.of(context);
+        // if (!currentFocus.hasPrimaryFocus) {
+        //   currentFocus.unfocus();
+        // }
+      }, child: Text('Send Question')),
+      TextButton(onPressed: (){
+        Navigator.pop(context);
+      }, child: Text('Retry')),
+    ],
+  ),
+);
+        print(_text);
+
+      });
+      _speech.stop();
+
+
+
+    }
+  }
+
 }
