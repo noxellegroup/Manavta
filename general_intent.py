@@ -30,6 +30,11 @@ def general_intent_handler(msg):
         ints = predict_class(msg, model)
         res1 = getResponse(ints, intents)
         res = res1.replace("{n}", name)
+    elif msg.startswith("hi i am"):
+        name = msg[8:]
+        ints = predict_class(msg, model)
+        res1 = getResponse(ints, intents)
+        res = res1.replace("{n}", name)
     else:
         ints = predict_class(msg, model)
         res = getResponse(ints, intents)
