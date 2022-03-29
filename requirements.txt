@@ -115,12 +115,9 @@ tf-estimator-nightly==2.8.0.dev2021122109
 threadpoolctl==3.1.0
 tokenizers==0.11.4
 toml==0.10.2
-torch==1.6.0
-torchvision==0.7.0
 tornado==4.5.3
 tqdm==4.62.3
 traitlets==5.1.1
-transformers==4.16.2
 typing_extensions==4.1.1
 uritemplate==4.1.1
 urllib3==1.24.3
@@ -130,5 +127,4 @@ Werkzeug==2.0.3
 wrapt==1.14.0
 wsproto==1.1.0
 WTForms==3.0.1
-XlsxWriter==3.0.2
 zipp==3.7.0
