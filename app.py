@@ -9,6 +9,7 @@ import toml
 import os
 import pyttsx3
 import resolvers as r
+import platform
 # Classifier
 from classifier import intent_identifier
 # Symptoms-Disease
@@ -245,10 +246,12 @@ def user_response(data, methods=['GET', 'POST']):
                     message = data["response"]
 
             socketio.emit('bot response', data, callback=messageReceived)
-            engine = pyttsx3.init()
-            engine.say(message)
-            engine.runAndWait()
-            engine.stop()
+
+            if (platform.system()=="Windows"):
+                engine = pyttsx3.init()
+                engine.say(message)
+                engine.runAndWait()
+                engine.stop()
 
         except Exception as e:
            print(e)
