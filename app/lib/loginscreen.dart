@@ -35,6 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
     subs = getLinksStream().listen((String? link) {
       if(link!=null){_checkDeepLink(link);}
 
+
     }, cancelOnError: true);
   }
   void _checkDeepLink(String link) {

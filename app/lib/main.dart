@@ -40,9 +40,7 @@ class LandingPage extends StatelessWidget {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.active) {
-
           User? user = snapshot.data;
-
           if (user == null) {
             return const LoginScreen();
           }
@@ -64,7 +62,7 @@ class LandingPage extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   final User user;
-  MyHomePage({ required this.user ,required this.title}) ;
+  MyHomePage({ required this.user ,required this.title});
 
   final String title;
   @override
@@ -72,9 +70,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   //speech to text
-
   late stt.SpeechToText _speech;
   bool _isListening = false;
   String _text = '';
@@ -82,17 +78,22 @@ class _MyHomePageState extends State<MyHomePage> {
   //speech
   @override
   void initState() {
-
     super.initState();
     _speech=stt.SpeechToText();
+    print(widget.user.photoURL);
 
+    setState(() {
+      messsages.insert(0, {
+        "data": 0,
+        "message":" Hi ${widget.user.displayName}, I am Manav. \nHow can I help you today? \nHere are some questions you can ask ! \n* ${"I am having night sweats with fever"}."
+            "\n* ${"Tell me more about cold"}."  "\n* ${"Elaborate on Pneumonia"}."
+      });
+    });
   }
-
-
   void response(query) async {
 
     HttpLink httpLink = HttpLink(
-      'https://countries.trevorblades.com/'
+      'http://10.0.2.2:5000/graphql'
     );
 
     GraphQLClient graphql = GraphQLClient(
@@ -100,20 +101,29 @@ class _MyHomePageState extends State<MyHomePage> {
       cache: GraphQLCache(),
     );
 
-    final String whattofetch = """
+  //   final String whattofetch = """
+  //   query fetchthis {
+  //     country(code: "${query}"){
+  //     capital
+  //     }
+  //   }
+  // """;
+
+    final String fetchManavresponse = """
     query fetchthis {
-      country(code: "${query}"){
-      capital
+       chatbot_dialogue(message: "${query}") {
+       response
       }
     }
   """;
 
-    QueryOptions q = QueryOptions(document: gql(whattofetch));
+    QueryOptions q = QueryOptions(document: gql(fetchManavresponse));
 
-
+    print(query);
     var result = await graphql.query(q);
-    String resultE = result.data!['country']['capital'];
-
+    print(result.data!['chatbot_dialogue']['response']);
+    //String resultE = result.data!['country']['capital'];
+    String resultE = result.data!['chatbot_dialogue']['response'].toString();
     setState(() {
       messsages.insert(0, {
         "data": 0,
@@ -121,7 +131,7 @@ class _MyHomePageState extends State<MyHomePage> {
       });
     });
     print('hello');
-   print(result.data!['country']['capital']);
+
 
 
   }
@@ -348,8 +358,13 @@ keyboardType: TextInputType.multiline,
             width: 60,
             child: CircleAvatar(
               radius: 20,
+                child:  ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
 
-              backgroundImage: AssetImage("assets/default.jpg"),
+                    child: widget.user.photoURL!=null ? Image.network("${widget.user.photoURL}") : Image.asset("assets/default.jpg"),
+                ),
+                  //  widget.user.phoImage.network("${widget.user.photoURL}")),
+              //AssetImage("assets/default.jpg"),
             ),
           ) : Container(),
 
@@ -368,6 +383,7 @@ keyboardType: TextInputType.multiline,
         setState(() => _isListening = true);
         _speech.listen(
           onResult: (val) => setState(() {
+
             _text = val.recognizedWords;
 
             if (val.hasConfidenceRating && val.confidence > 0) {
