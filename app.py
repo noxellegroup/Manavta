@@ -8,7 +8,10 @@ from ariadne import graphql_sync, make_executable_schema, load_schema_from_path,
 from ariadne.constants import PLAYGROUND_HTML
 import toml
 import resolvers as r
-import pyttsx3
+try:
+    import pyttsx3
+except Exception as e:
+    print("Unavailable")
 import platform
 # Classifier
 from classifier import intent_identifier
@@ -141,10 +144,11 @@ def user_connect(data, methods=['GET', 'POST']):
     data["user_name"] = "Manav"
     data["greet"] = "Hey there! I'm Manav, your personal health assistant. Ask me anything &#128512;"
     socketio.emit('bot greet', data, callback=messageReceived)
-    engine = pyttsx3.init()
-    engine.say(data["greet"][:len(data["greet"])-9])
-    engine.runAndWait()
-    engine.stop()
+    if platform.system()=="Windows" and sound:
+        engine = pyttsx3.init()
+        engine.say(data["greet"][:len(data["greet"])-9])
+        engine.runAndWait()
+        engine.stop()
         
 @socketio.on('user response')
 def user_response(data, methods=['GET', 'POST']):
