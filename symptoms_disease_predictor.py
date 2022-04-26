@@ -69,8 +69,7 @@ def symptoms_disease_predict(symptoms):
         for i in multipred:
             sdf = ds3.loc[ds3['name'] == i]
             multi_symptoms[i] = sdf["symptoms"].values[0][:r]
-            
-        print(multi_symptoms)
+
         return pred[0], multi_symptoms
     except Exception as e:
         print(e)
