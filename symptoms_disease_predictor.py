@@ -5,6 +5,7 @@ from collections import defaultdict
 import ast
 import warnings
 import joblib
+from heapq import nlargest
 warnings.filterwarnings('ignore')
 
 def symptoms_disease_predict(symptoms):
@@ -25,6 +26,7 @@ def symptoms_disease_predict(symptoms):
         ds1.drop(['symptom'], axis=1)
 
         ds2 = ds1[["name", "symptoms"]]
+        ds3 = ds2
         ds2 = ds2.explode('symptoms')
 
         df_1 = pd.get_dummies(ds2.symptoms)
@@ -55,6 +57,20 @@ def symptoms_disease_predict(symptoms):
             sample_x[m] = 1
             
         pred = symptoms_disease_model.predict([sample_x])
-        return pred[0]
+        prob = symptoms_disease_model.predict_proba([sample_x])
+        multi = dict(zip(symptoms_disease_model.classes_, prob[0]))
+        multipred = nlargest(3, multi, key = multi.get)
+        multi_symptoms = {}
+        r = 100
+        for i in multipred:
+            sdf = ds3.loc[ds3['name'] == i]
+            r = min(r, len(sdf["symptoms"].values[0]))
+        
+        for i in multipred:
+            sdf = ds3.loc[ds3['name'] == i]
+            multi_symptoms[i] = sdf["symptoms"].values[0][:r]
+            
+        print(multi_symptoms)
+        return pred[0], multi_symptoms
     except Exception as e:
         print(e)

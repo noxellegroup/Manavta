@@ -1,3 +1,4 @@
+from distutils.log import debug
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
 from flask_session import Session
 from flask_socketio import SocketIO
@@ -23,6 +24,8 @@ from models import db, Diseases
 from spellchecker import SpellChecker
 # Punctuation Handler
 from punctuation_handler import punctuation_handler
+# Commands Parser
+from commands_parser import commands_parser
 
 config = toml.load("config.toml")
 
@@ -55,6 +58,15 @@ query.set_field('diseases_with_id', r.diseases_with_id)
 query.set_field('chatbot_dialogue', r.chatbot_dialogue)
 
 schema = make_executable_schema(type_defs, [gqlDiseases, gqlDialogue, query])
+
+# Voice definition
+gender = None
+# Sound definition
+sound = True
+# Advanced definition
+advanced = False
+choose = False
+options = {}
 
 class Diseases(db.Document):
     disease = db.StringField()
@@ -137,122 +149,186 @@ def user_connect(data, methods=['GET', 'POST']):
 @socketio.on('user response')
 def user_response(data, methods=['GET', 'POST']):
     socketio.emit('user response', data, callback=messageReceived)
-    
+    global gender
+    global sound
+    global advanced
+    global choose
+    global options
     if "message" in data:
         try:
             original = data["message"]
-            data["message"] = punctuation_handler(data["message"])
-            tokens = data["message"].split(" ")
-            misspelled = spell.unknown(tokens)
-            if len(misspelled)!=0:
-                for word in misspelled:
-                    data["message"] = data["message"].replace(word, spell.correction(word))
-
-            intent = intent_identifier(data["message"])
-
-            message = f""
-
-            if not intent:
-                data["response"] = general_intent_handler(original)
-                message = data["response"]
-            else:
-                intent_type = intent["question_types"][0]
-
-                if intent_type == "symptom_disease":
-                    symptoms = []
-                    for i in intent["args"]:
-                        if "symptom" in intent["args"][i]:
-                            symptoms.append(i)
-                    disease = symptoms_disease_predict(symptoms)
-                    data["response"] = f"You most likely have {disease}."
-                    message = data["response"]
-                elif intent_type == "disease_desc":
-                    diseases = []
-                    for i in intent["args"]:
-                        if "disease" in intent["args"][i]:
-                            diseases.append(i)
-                    info = f""
-                    for index, disease in enumerate(diseases):
-                        if (len(diseases)==1):
-                            info += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description}"
-                            message += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description}"
-                        else:
-                            if (index!=(len(diseases)-1)):
-                                info += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description} <br>"
-                                message += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description} and"
-                            else:
-                                info += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description}"
-                                message += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description}"
-                    data["response"] = info
-                elif intent_type == "disease_accompany":
-                    accompanies = []
-                    for i in intent["args"]:
-                        if "disease" in intent["args"][i]:
-                            accompanies.append(i)
-                    disease = accompany_disease_predict(accompanies)
-                    data["response"] = f"You can develop complications such as {disease}."
-                    message = data["response"]
-                elif intent_type == "disease_department":
-                    diseases = []
-                    for i in intent["args"]:
-                        if "disease" in intent["args"][i]:
-                            diseases.append(i)
-                    info = f""
-                    for index, disease in enumerate(diseases):
-                        departments = Diseases.objects(disease=disease).first().departments
-                        disease = disease.capitalize()
-                        if (len(departments)==1):
-                            result = departments[0].capitalize()
-                        elif (len(departments)==2):
-                            result = f"{departments[0].capitalize()} ({departments[1].capitalize()})"
-                        if (len(diseases)==1):
-                            info += f"{disease} belongs to: {result}"
-                            message += f"{disease} belongs to: {result}"
-                        else:
-                            if (index!=(len(diseases)-1)):
-                                info += f"{disease} belongs to: {result} <br>"
-                                message += f"{disease} belongs to: {result} and"
-                            else:
-                                info += f"{disease} belongs to: {result}"
-                                message += f"{disease} belongs to: {result}"
-                    data["response"] = info
-                elif intent_type == "disease_cure":
-                    diseases = []
-                    for i in intent["args"]:
-                        if "disease" in intent["args"][i]:
-                            diseases.append(i)
-                    info = f""
-                    for index, disease in enumerate(diseases):
-                        cures = Diseases.objects(disease=disease).first().cure
-                        if (len(cures)==1):
-                            result = cures[0].capitalize()
-                        elif (len(cures)>1):
-                            result = ", ".join(cures).capitalize()
-                        if (len(diseases)==1):
-                            info += f"To treat {disease} you need: {result}"
-                            message += f"To treat {disease} you need: {result}"
-                        else:
-                            if (index!=(len(diseases)-1)):
-                                info += f"To treat {disease} you need: {result} <br>"
-                                message += f"To treat {disease} you need: {result} and"
-                            else:
-                                info += f"To treat {disease} you need: {result}"
-                                message += f"To treat {disease} you need: {result}"
-                    data["response"] = info
+            present, command = commands_parser(original)
+            if present:
+                if command == "male" or command == "female":
+                    gender = command
+                    data["response"] = "Voice settings changed."
+                    socketio.emit('bot response', data, callback=messageReceived)
+                elif command == "off":
+                    sound = False
+                    data["response"] = "Manavta speaking mode turned off."
+                    socketio.emit('bot response', data, callback=messageReceived)
+                elif command == "on":
+                    sound = True
+                    data["response"] = "Manavta speaking mode turned on."
+                    socketio.emit('bot response', data, callback=messageReceived)
+                elif command == "advanced":
+                    advanced = True
+                    data["response"] = "Advanced mode turned on."
+                    socketio.emit('bot response', data, callback=messageReceived)
+                elif command == "primitive":
+                    advanced = False
+                    data["response"] = "Advanced mode turned off."
+                    socketio.emit('bot response', data, callback=messageReceived)
                 else:
-                    data["response"] = "Coming soon."
-                    message = data["response"]
+                    data["response"] = "Invalid command."
+                    socketio.emit('bot response', data, callback=messageReceived)
+            else:
+                if not choose:
+                    data["message"] = punctuation_handler(data["message"])
+                    tokens = data["message"].split(" ")
+                    misspelled = spell.unknown(tokens)
+                    if len(misspelled)!=0:
+                        for word in misspelled:
+                            data["message"] = data["message"].replace(word, spell.correction(word))
 
-            socketio.emit('bot response', data, callback=messageReceived)
+                    intent = intent_identifier(data["message"])
 
-            if (platform.system()=="Windows"):
-                engine = pyttsx3.init()
-                engine.say(message)
-                engine.runAndWait()
-                engine.stop()
+                    message = f""
+
+                    if not intent:
+                        data["response"] = general_intent_handler(original)
+                        message = data["response"]
+                    else:
+                        intent_type = intent["question_types"][0]
+
+                        if intent_type == "symptom_disease":
+                            symptoms = []
+                            for i in intent["args"]:
+                                if "symptom" in intent["args"][i]:
+                                    symptoms.append(i)
+                            disease, multi = symptoms_disease_predict(symptoms)
+                            if advanced:
+                                options = multi
+                                prep = ""
+                                clean_prep = ""
+                                for index, keys in enumerate(options):
+                                    prep += f"{index+1}. {', '.join(map(str, options[keys]))} <br>"
+                                    clean_prep += f"{index+1}. {options[keys]} "
+                                data["response"] = f"Which of the following option best describes your symptoms? <br> {prep}"
+                                message = f"Which of the following option best describes your symptoms? {clean_prep}"
+                                choose = True
+                            else:
+                                data["response"] = f"You most likely have {disease}."
+                                message = data["response"]
+                        elif intent_type == "disease_desc":
+                            diseases = []
+                            for i in intent["args"]:
+                                if "disease" in intent["args"][i]:
+                                    diseases.append(i)
+                            info = f""
+                            for index, disease in enumerate(diseases):
+                                if (len(diseases)==1):
+                                    info += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description}"
+                                    message += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description}"
+                                else:
+                                    if (index!=(len(diseases)-1)):
+                                        info += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description} <br>"
+                                        message += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description} and"
+                                    else:
+                                        info += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description}"
+                                        message += f"Here's what I know about {disease}: {Diseases.objects(disease=disease).first().description}"
+                            data["response"] = info
+                        elif intent_type == "disease_accompany":
+                            accompanies = []
+                            for i in intent["args"]:
+                                if "disease" in intent["args"][i]:
+                                    accompanies.append(i)
+                            disease = accompany_disease_predict(accompanies)
+                            data["response"] = f"You can develop complications such as {disease}."
+                            message = data["response"]
+                        elif intent_type == "disease_department":
+                            diseases = []
+                            for i in intent["args"]:
+                                if "disease" in intent["args"][i]:
+                                    diseases.append(i)
+                            info = f""
+                            for index, disease in enumerate(diseases):
+                                departments = Diseases.objects(disease=disease).first().departments
+                                disease = disease.capitalize()
+                                if (len(departments)==1):
+                                    result = departments[0].capitalize()
+                                elif (len(departments)==2):
+                                    result = f"{departments[0].capitalize()} ({departments[1].capitalize()})"
+                                if (len(diseases)==1):
+                                    info += f"{disease} belongs to: {result}"
+                                    message += f"{disease} belongs to: {result}"
+                                else:
+                                    if (index!=(len(diseases)-1)):
+                                        info += f"{disease} belongs to: {result} <br>"
+                                        message += f"{disease} belongs to: {result} and"
+                                    else:
+                                        info += f"{disease} belongs to: {result}"
+                                        message += f"{disease} belongs to: {result}"
+                            data["response"] = info
+                        elif intent_type == "disease_cure":
+                            diseases = []
+                            for i in intent["args"]:
+                                if "disease" in intent["args"][i]:
+                                    diseases.append(i)
+                            info = f""
+                            for index, disease in enumerate(diseases):
+                                cures = Diseases.objects(disease=disease).first().cure
+                                if (len(cures)==1):
+                                    result = cures[0].capitalize()
+                                elif (len(cures)>1):
+                                    result = ", ".join(cures).capitalize()
+                                if (len(diseases)==1):
+                                    info += f"To treat {disease} you need: {result}"
+                                    message += f"To treat {disease} you need: {result}"
+                                else:
+                                    if (index!=(len(diseases)-1)):
+                                        info += f"To treat {disease} you need: {result} <br>"
+                                        message += f"To treat {disease} you need: {result} and"
+                                    else:
+                                        info += f"To treat {disease} you need: {result}"
+                                        message += f"To treat {disease} you need: {result}"
+                            data["response"] = info
+                        else:
+                            data["response"] = "Coming soon."
+                            message = data["response"]
+                elif choose:
+                    data["message"] = punctuation_handler(data["message"])
+                    choice = data["message"]
+                    if choice.isdigit():
+                        if int(choice) == 1 or int(choice) == 2 or int(choice) == 3:
+                            for index, keys in enumerate(options):
+                                if((int(choice)-1)==index):
+                                    data["response"] = f"You most likely have {keys}."
+                                    message = data["response"]
+                                    choose = False
+                        else:
+                            data["response"] = "Invalid option."
+                            message = data["response"] 
+                    else:
+                        data["response"] = "Invalid option."
+                        message = data["response"]
+
+
+                socketio.emit('bot response', data, callback=messageReceived)
+
+                if platform.system()=="Windows" and sound:
+                    engine = pyttsx3.init()
+                    voices = engine.getProperty('voices')  
+                    if(gender == "female"):
+                        engine.setProperty('voice', voices[1].id)
+                    elif(gender == "male"):
+                        engine.setProperty('voice', voices[0].id)
+                    engine.say(message)
+                    engine.runAndWait()
+                    engine.stop()
 
         except Exception as e:
            print(e)
 
 if __name__ == '__main__':
-    socketio.run(app)
+    socketio.run(app, debug=True)
