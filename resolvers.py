@@ -2,6 +2,7 @@ from flask import Flask
 from flask_mongoengine import MongoEngine
 import json
 import toml
+import nltkmodules
 # Classifier
 from classifier import intent_identifier
 # Symptoms-Disease

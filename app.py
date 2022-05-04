@@ -8,6 +8,7 @@ from ariadne import graphql_sync, make_executable_schema, load_schema_from_path,
 from ariadne.constants import PLAYGROUND_HTML
 import toml
 import resolvers as r
+import nltkmodules
 try:
     import pyttsx3
 except Exception as e:
