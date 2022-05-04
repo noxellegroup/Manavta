@@ -67,7 +67,7 @@ gender = None
 # Sound definition
 sound = True
 # Advanced definition
-advanced = False
+advanced = True
 choose = False
 options = {}
 
