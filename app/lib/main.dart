@@ -85,8 +85,8 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       messsages.insert(0, {
         "data": 0,
-        "message":" Hi ${widget.user.displayName}, I am Manav. \nHow can I help you today? \nHere are some questions you can ask ! \n* ${"I am having night sweats with fever"}."
-            "\n* ${"Tell me more about cold"}."  "\n* ${"Elaborate on Pneumonia"}."
+        "message":" Hi ${widget.user.displayName}, I am Manav. \nHow can I help you today?  \nHere are some questions you can ask ! \n* ${"I am having night sweats with fever"}."
+            "\n* ${"Tell me more about cold"}."
       });
     });
   }
@@ -101,13 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
       cache: GraphQLCache(),
     );
 
-  //   final String whattofetch = """
-  //   query fetchthis {
-  //     country(code: "${query}"){
-  //     capital
-  //     }
-  //   }
-  // """;
+
 
     final String fetchManavresponse = """
     query fetchthis {
@@ -122,8 +116,21 @@ class _MyHomePageState extends State<MyHomePage> {
     print(query);
     var result = await graphql.query(q);
     print(result.data!['chatbot_dialogue']['response']);
-    //String resultE = result.data!['country']['capital'];
     String resultE = result.data!['chatbot_dialogue']['response'].toString();
+
+    var b=resultE.split(new RegExp(r"[0-9]"));
+    var len=b.length;
+    if (len==1){
+      resultE=result.data!['chatbot_dialogue']['response'].toString();
+    }
+    else{
+      var c= "${b[0]}\n 1${b[1]}\n 2${b[2]}\n 3${b[3]}\n";
+      resultE=c;
+    }
+
+
+
+
     setState(() {
       messsages.insert(0, {
         "data": 0,
@@ -282,7 +289,7 @@ keyboardType: TextInputType.multiline,
                           messsages.insert(0,
                               {"data": 1, "message": messageInsert.text});
                         });
-                        response(messageInsert.text);
+                        response(messageInsert.text.toString());
                         messageInsert.clear();
                       }
                       FocusScopeNode currentFocus = FocusScope.of(context);
