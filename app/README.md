@@ -2,7 +2,7 @@
 
 Medical Chatbot
 
-## Getting Started Wit Manavta
+## Getting Started With Manavta
 
 This project is a demo created to showcase how Manavta Healthcare Framework can be utilized to create custom application.
 To get this app up and running you need to create a "secret_keys.dart" file inside the lib folder.
